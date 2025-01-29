@@ -1,4 +1,3 @@
-# Got it! Here's a refined README that focuses on verifying transactions and fetching transaction amounts from Solana.  
 
 ---
 
