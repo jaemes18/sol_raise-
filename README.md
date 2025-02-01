@@ -3,6 +3,9 @@
 ## 🌟 Overview  
 This is the backend for a **crowdfunding platform** that integrates with **Solana** to **verify transactions and retrieve transaction amounts**. Built with **Django** and **PostgreSQL**, it ensures secure and reliable fundraising operations.  
 
+Base API URL: http://127.0.0.1:8000/api/
+
+
 ## 🔧 Tech Stack  
 - **Backend:** Django (Python)  
 - **Database:** PostgreSQL  
