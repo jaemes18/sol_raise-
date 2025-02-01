@@ -38,6 +38,7 @@ from .serializers import ContributionSerializer, UserProfileUpdateSerializer
 from solana.rpc.api import Client
 from .serializers import ChatReasonSerializer
 from rest_framework.permissions import IsAuthenticated
+from django.utils.timezone import now
 
 class ChatReasonListCreateView(generics.ListCreateAPIView):
     queryset = ChatReason.objects.all()
@@ -184,12 +185,26 @@ class ProjectListCreateView(generics.ListCreateAPIView):
             raise serializers.ValidationError("Sorry! you cannot create more than one project")
         serializer.save(creator=self.request.user, status='pending')
 
+    def get_queryset(self):
+        """Override the default queryset to include only non-expired projects."""
+        queryset = super().get_queryset()
+        return queryset.filter(deadline__gt=now())
+
 
 class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+class ContributionsView(generics.ListAPIView):
+    queryset = Contribution.objects.all()
+    serializer_class = ContributionSerializer
+    permission_classes = [IsAuthenticated]
+
+class ContributionDetailView(generics.RetrieveAPIView):
+    queryset = Contribution.objects.all()
+    serializer_class = ContributionSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 class LoginView(APIView):
     permission_classes = [AllowAny]

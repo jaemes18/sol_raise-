@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
 )
 from . import views
 from .views import  RegisterUserView,LoginView,ProjectListCreateView, ProjectDetailView,\
-    Contribution,UserprofileUpdateView,ChatReasonListCreateView,MessageViewSet
+    Contribution,UserprofileUpdateView,ChatReasonListCreateView,MessageViewSet,ContributionsView, ContributionDetailView
 
 router = DefaultRouter()
 router.register(r'messages', MessageViewSet, basename='messages')
@@ -20,6 +20,8 @@ urlpatterns = [
     path('register/', RegisterUserView.as_view(), name='register_user'),
     path('projects/', ProjectListCreateView.as_view(), name='project-create'),
     path('projects/<int:pk>/', ProjectDetailView.as_view(), name='project-detail'),
+    path('contributions/<int:pk>/', views.ContributionDetailView.as_view(), name='contribution'),
+    path('contributions/', views.ContributionsView.as_view(), name='contributions'),
     path('verify_pay/', views.contribute, name='verify-pay'),
     path('update_profile/', views.UserprofileUpdateView.as_view(), name='update-profile'),
     path('chat_reason/', views.ChatReasonListCreateView.as_view(), name='chat-reason'),

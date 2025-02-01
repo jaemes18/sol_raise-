@@ -15,6 +15,7 @@ from .models import Contribution
 from rest_framework import serializers
 from .models import Contribution
 from .models import ChatReason,Message
+from django.utils.timezone import now
 
 class ChatReasonSerializer(serializers.ModelSerializer):
     project_title = serializers.ReadOnlyField(source='project.title')
@@ -59,20 +60,28 @@ class ContributionSerializer(serializers.ModelSerializer):
         print("Saving with platform fee:", validated_data['platform_fee'])
         return Contribution.objects.create(**validated_data)
 
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     creator_wallet_address = serializers.SerializerMethodField()
     creator = serializers.StringRelatedField()
+    is_expired = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
         fields = ['id', 'title', 'description', 'funding_goal', 'current_funding',
-                  'deadline', 'creator', 'files', 'creator_wallet_address', 'status']
-        read_only_fields = ['creator', 'status']
+                  'deadline', 'creator', 'files', 'creator_wallet_address', 'status', 'is_expired']
+
+        read_only_fields = ['creator', 'status', 'is_expired']
 
     def get_creator_wallet_address(self, obj):
         """Retrieve the wallet address from the creator's profile."""
         user_profile = getattr(obj.creator, 'userprofile', None)
         return user_profile.wallet_address if user_profile else "No Wallet Address"
+
+    def get_is_expired(self, obj):
+        """Return whether the project is expired or not."""
+        return obj.deadline < now()
 
 
 
